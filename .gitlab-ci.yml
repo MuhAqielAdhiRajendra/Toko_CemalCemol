@@ -1,0 +1,11 @@
+stages:
+  - test_deploy
+
+coba_deploy_ke_azure:
+  stage: test_deploy
+  script:
+    - echo "Semua Aman"
+    - echo "Berikut daftar file :"
+    - ls -la
+  only:
+    - main
