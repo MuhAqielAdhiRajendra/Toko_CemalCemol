@@ -1,0 +1,60 @@
+# Laravel / PHP
+/vendor
+/node_modules
+/.env
+/.env.local
+/.env.*.local
+/.phpunit.result.cache
+/.idea
+/.vscode
+/.history
+.phpstorm.meta.php
+Homestead.yaml
+Homestead.json
+/.vagrant
+/.sass-cache
+/.cache
+/public/hot
+/public/storage
+/storage/*.key
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs
+# Composer
+/vendor/
+/composer.lock
+# NPM
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+/pnpm-debug.log*
+/parcel-bundler-cache.json
+/.parcel-cache
+/.cache
+/dist
+# OS Files
+Thumbs.db
+.DS_Store
+ehthumbs.db
+Icon?
+# IDE Files
+*.sublime-workspace
+*.sublime-project
+*.idea/
+*.vscode/
+# Build / Dependency artifacts
+/public/build
+/resources/js/dist
+/resources/css/dist
+# PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+# Misc
+.env.backup
+.env.testing
+.env.production
+.env.staging
+*.log
+*.cache
+*~
