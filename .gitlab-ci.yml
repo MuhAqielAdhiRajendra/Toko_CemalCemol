@@ -1,11 +1,17 @@
 stages:
-  - test_deploy
+  - deploy
 
-coba_deploy_ke_azure:
-  stage: test_deploy
+deploy_laravel_ke_azure:
+  stage: deploy
   script:
-    - echo "Semua Aman"
-    - echo "Berikut daftar file :"
-    - ls -la
+    - echo "Mulai memindahkan kodingan ke folder web..."
+    - cp -r ./* /var/www/muhaqieladhirajendra.dev/
+    - cd /var/www/muhaqieladhirajendra.dev
+    - echo "Menginstal dependensi (Bismillah RAM 1GB Azure kuat tahan OOM!)..."
+    - composer install --optimize-autoloader --no-dev
+    - cp .env.example .env
+    - php artisan key:generate
+    - chmod -R 777 storage bootstrap/cache
+    - echo "Deploy Sukses"
   only:
     - main
