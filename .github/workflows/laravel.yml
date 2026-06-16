@@ -77,8 +77,8 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          # Ganti /var/www/html/namaproject dengan path (lokasi) project kamu di server
-          cd /var/www/html/namaproject
+          # path server
+          cd /home/muhaqieladhirajendra/htdocs/muhaqieladhirajendra.dev
           
           # Ambil kode terbaru dari github
           git pull origin main
@@ -95,4 +95,4 @@ jobs:
           
           # Clear dan re-cache config, route, dan view
           php artisan optimize:clear
-          php artisan optimize
+          php artisan optimize
