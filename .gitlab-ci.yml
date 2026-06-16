@@ -3,26 +3,27 @@ stages:
 
 deploy_production:
   stage: deploy
-  # Kita pakai image Node supaya bisa npm install & vite build
   image: node:20-alpine
   tags:
     - azure-runner
   before_script:
     # Instal OpenSSH & Rsync di dalam container Node Alpine
     - apk add --no-cache openssh-client rsync
-    # Setup SSH Key
     - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    # Menambahkan IP Server ke known_hosts agar SSH tidak diblokir
     - ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
+    # Trik VIP: Ambil file kunci, bersihkan karakter enter Windows (\r), set permission 600, lalu pasang!
+    - tr -d '\r' < "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-add ~/.ssh/id_rsa
   script:
     - echo "1. Menginstal dependensi Node.js & Build Assets Vite..."
     - npm install
     - npm run build
     
     - echo "2. Transfer kodingan (termasuk hasil build) ke Azure VM via Rsync..."
-    # Rsync langsung kirim kodingan dari Runner ke Azure, tanpa mampir ke GitLab Artifacts!
     - rsync -avz --exclude='.git' --exclude='node_modules' --exclude='/storage' --exclude='.env' ./ $SERVER_USER@$SERVER_HOST:/var/www/muhaqieladhirajendra.dev/
     
     - echo "3. Menjalankan Command Laravel di dalam Azure VM via SSH..."
