@@ -5,6 +5,8 @@ stages:
 build_assets:
   stage: build
   image: node:20-alpine
+  tags:              # <--- INI KUNCI BIAR RUNNER LU MAU GERAK WOK
+    - docker
   script:
     - echo "Menginstal dependensi Node.js & Build Assets..."
     - npm install
@@ -19,6 +21,8 @@ build_assets:
 deploy_laravel_ke_azure:
   stage: deploy
   image: alpine:latest
+  tags:              # <--- DI SINI JUGA WAJIB DITAMBAHIN
+    - docker
   before_script:
     # Instal OpenSSH & Rsync di dalam container GitLab Runner
     - apk add --no-cache openssh-client rsync
