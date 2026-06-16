@@ -25,7 +25,7 @@ class AuthController extends Controller
         'password' => ['required'],
         'g-recaptcha-response' => ['required', function ($attribute, $value, $fail) {
             $response = Http::withoutVerifying()->asForm()->post('https://www.recaptcha.net/recaptcha/api/siteverify', [
-                'secret' => env('RECAPTCHA_SECRET_KEY'),
+                'secret' => config('recaptcha.secret_key'),
                 'response' => $value,
                 'remoteip' => request()->ip()
             ]);
@@ -85,7 +85,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed', // confirmed ngecek password_confirmation
             'g-recaptcha-response' => ['required', function ($attribute, $value, $fail) {
                 $response = Http::withoutVerifying()->asForm()->post('https://www.recaptcha.net/recaptcha/api/siteverify', [
-                    'secret' => env('RECAPTCHA_SECRET_KEY'),
+                    'secret' => config('recaptcha.secret_key'),
                     'response' => $value,
                     'remoteip' => request()->ip()
                 ]);
