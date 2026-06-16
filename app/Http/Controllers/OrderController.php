@@ -21,28 +21,31 @@ class OrderController extends Controller
         return view('cart'); 
     }
 
-    public function addToCart($id)
+    public function addToCart(Request $request, $id)
     {
         // [FIX] Pakai Auth::check() biar aman dari error undefined
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Eits, login dulu wak biar bisa masukin keranjang! 🔒');
+            return redirect()->route('login')->with('error', 'Eits, login dulu wak biar bisa masukin keranjang! ');
         }
+
+        $qtyToAdd = (int) $request->input('quantity', 1);
+        if ($qtyToAdd < 1) $qtyToAdd = 1;
 
         $product = Product::findOrFail($id);
         $cart = session()->get('cart', []);
 
         // Cek stok
-        if($product->stock < 1) {
-             return redirect()->back()->with('error', 'Stok habis wak!');
+        if($product->stock < $qtyToAdd) {
+             return redirect()->back()->with('error', 'Stok tidak cukup!');
         }
 
         if(isset($cart[$id])) {
-            $cart[$id]['quantity']++;
+            $cart[$id]['quantity'] += $qtyToAdd;
         } else {
             $cart[$id] = [
                 "id" => $product->id,
                 "name" => $product->name,
-                "quantity" => 1,
+                "quantity" => $qtyToAdd,
                 "price" => $product->price,
                 "image" => $product->image
             ];
@@ -60,6 +63,16 @@ class OrderController extends Controller
             session()->put('cart', $cart);
         }
         return redirect()->back()->with('success', 'Produk dihapus dari keranjang');
+    }
+
+    public function adjustCart($id, $qty)
+    {
+        $cart = session()->get('cart', []);
+        if(isset($cart[$id])) {
+            $cart[$id]['quantity'] = max(1, (int)$qty);
+            session()->put('cart', $cart);
+        }
+        return redirect()->route('cart.index')->with('success', 'Jumlah pesanan disesuaikan!');
     }
 
     // =========================================================
@@ -92,7 +105,11 @@ class OrderController extends Controller
                 return redirect()->back()->with('error', 'Produk "' . $item['name'] . '" sudah tidak ada.');
             }
             if ($product->stock < $item['quantity']) {
-                return redirect()->back()->with('error', 'Stok "' . $item['name'] . '" kurang wak! Sisa: ' . $product->stock);
+                return redirect()->back()->with('stock_warning', [
+                    'id' => $id,
+                    'name' => $item['name'],
+                    'stock' => $product->stock
+                ]);
             }
         }
 
@@ -156,9 +173,17 @@ class OrderController extends Controller
     // 3. KHUSUS ADMIN (Lihat Order)
     // =========================================================
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::latest()->get();
+        $query = Order::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('customer_name', 'like', "%{$search}%")
+                  ->orWhere('id', 'like', "%{$search}%");
+        }
+
+        $orders = $query->latest()->get();
         // Sesuai konfirmasi kamu, nama filenya 'products.order' (tanpa s)
         return view('products.order', compact('orders')); 
     }

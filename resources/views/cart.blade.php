@@ -30,18 +30,6 @@
 
     <div class="container mx-auto px-4 md:px-6 py-8 mb-12">
         
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-200 text-green-700 px-6 py-4 rounded-2xl mb-6 shadow-sm flex items-center gap-2 animate-bounce">
-                ✅ <span>{{ session('success') }}</span>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="bg-red-100 border border-red-200 text-red-700 px-6 py-4 rounded-2xl mb-6 shadow-sm flex items-center gap-2">
-                ⚠️ <span>{{ session('error') }}</span>
-            </div>
-        @endif
-
         @php
             $cart = session('cart');
             $cartIsEmpty = empty($cart) || count($cart) == 0;
@@ -53,7 +41,7 @@
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-3xl shadow-xl shadow-pink-100 border border-pink-50 overflow-hidden">
                     <div class="bg-pink-500 px-6 py-4 flex items-center gap-2">
-                        <span class="text-2xl">🛒</span>
+                        <span class="text-2xl"></span>
                         <h2 class="text-lg font-bold text-white">Keranjang Jajanmu</h2>
                     </div>
                     
@@ -120,7 +108,7 @@
                                                     </svg>
                                                 </div>
                                                 <p class="text-gray-500 font-medium">Wah, keranjangmu masih sepi nih.</p>
-                                                <a href="/" class="mt-4 bg-pink-500 text-white px-6 py-2 rounded-full font-bold hover:bg-pink-600 hover:shadow-lg transition transform hover:-translate-y-1">Isi Jajanan Yuk! 🍭</a>
+                                                <a href="/" class="mt-4 bg-pink-500 text-white px-6 py-2 rounded-full font-bold hover:bg-pink-600 hover:shadow-lg transition transform hover:-translate-y-1">Isi Jajanan Yuk! </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -134,7 +122,7 @@
             <div class="lg:col-span-1">
                 <div class="bg-white rounded-3xl shadow-xl shadow-pink-100 border border-pink-50 p-6 sticky top-24 {{ $cartIsEmpty ? 'opacity-60 grayscale-[50%]' : '' }}">
                     <div class="flex items-center gap-2 mb-6 border-b border-pink-100 pb-4">
-                        <span class="text-2xl">🛵</span>
+                        <span class="text-2xl"></span>
                         <h2 class="text-xl font-bold text-gray-800">Kirim Kemana?</h2>
                     </div>
                     
@@ -177,7 +165,7 @@
                 <label class="cursor-pointer">
                     <input type="radio" name="payment_method" value="cod" class="peer sr-only" checked>
                     <div class="rounded-2xl border-2 border-pink-100 bg-white p-3 text-center hover:bg-pink-50 peer-checked:border-pink-500 peer-checked:bg-pink-500 peer-checked:text-white transition shadow-sm cursor-pointer peer-disabled:cursor-not-allowed">
-                        <div class="text-xl mb-1">🏠</div>
+                        <div class="text-xl mb-1"></div>
                         <div class="text-xs font-bold">COD (Tunai)</div>
                         <div class="text-[10px] opacity-80">Bayar pas barang sampai</div>
                     </div>
@@ -199,9 +187,9 @@
                     : 'bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600 hover:-translate-y-1 active:scale-95' 
                 }}">
             @if($cartIsEmpty)
-                <span>🚫</span> Isi Keranjang Dulu Wak!
+                <span></span> Isi Keranjang Dulu
             @else
-                <span>🚀</span> Gas Pesan (COD Only)
+                <span></span> Pesan (COD Only)
             @endif
         </button>
 
@@ -213,6 +201,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function toggleProof(method) {
             const proofContainer = document.getElementById('proof-container');
@@ -229,6 +218,43 @@
                 proofInput.value = '';
             }
         }
+
+        @if(session('success'))
+            Swal.fire({
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                icon: 'success',
+                confirmButtonColor: '#ec4899',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                title: 'Oops...',
+                text: "{{ session('error') }}",
+                icon: 'error',
+                confirmButtonColor: '#ec4899'
+            });
+        @endif
+
+        @if(session('stock_warning'))
+            Swal.fire({
+                title: 'Stok Tidak Cukup!',
+                text: "Menu {{ session('stock_warning')['name'] }} sisa {{ session('stock_warning')['stock'] }}, ingin memesan sisanya?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ec4899',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Sesuaikan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('cart.adjust', ['id' => session('stock_warning')['id'], 'qty' => session('stock_warning')['stock']]) }}";
+                }
+            });
+        @endif
     </script>
 </body>
 </html>

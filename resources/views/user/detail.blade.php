@@ -23,7 +23,7 @@
                     $statusColor = match($order->status) {
                         'pending' => 'bg-yellow-400 text-yellow-900',
                         'paid' => 'bg-blue-400 text-blue-900',
-                        'shipped' => 'bg-purple-400 text-purple-900',
+                        'dikirim' => 'bg-purple-400 text-purple-900',
                         'completed' => 'bg-green-400 text-green-900',
                         'cancelled' => 'bg-red-400 text-red-900',
                         default => 'bg-gray-400 text-gray-900'
@@ -55,7 +55,7 @@
             </div>
 
             <h3 class="text-gray-800 font-bold mb-4 flex items-center gap-2">
-                🛍️ Rincian Barang
+                ️ Rincian Barang
             </h3>
             
             <div class="space-y-4 mb-8">
@@ -80,7 +80,7 @@
                                 
                                 @if($item->product && $item->product->preorder)
                                     <span class="inline-block mt-1 text-[10px] bg-pink-100 text-pink-600 px-2 py-0.5 rounded border border-pink-200 font-bold">
-                                        🔥 Pre-Order
+                                         Pre-Order
                                     </span>
                                 @endif
                             </div>

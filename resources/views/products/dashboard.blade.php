@@ -35,13 +35,13 @@
 
             <div class="flex items-center gap-4">
                 <a href="{{ route('home') }}" target="_blank" class="bg-pink-50 text-pink-600 hover:bg-pink-100 font-bold text-sm px-4 py-2 rounded-full border border-pink-100 flex items-center gap-2 transition">
-                    👁️ <span class="hidden sm:inline">Lihat Toko</span>
+                    <span class="hidden sm:inline">Lihat Toko</span>
                 </a>
                 <div class="h-8 w-px bg-pink-200"></div>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="text-rose-400 hover:text-rose-600 font-bold text-sm flex items-center gap-1 transition hover:bg-rose-50 px-3 py-2 rounded-full">
-                        Logout <span class="text-lg">🚪</span>
+                        Logout
                     </button>
                 </form>
             </div>
@@ -52,7 +52,7 @@
         
         @if(session('success'))
             <div class="bg-green-100 border border-green-200 text-green-700 px-6 py-4 rounded-3xl mb-8 shadow-sm flex justify-between items-center animate-fade-in-down">
-                <div class="flex items-center gap-2 font-bold"><span>✅</span><span>{{ session('success') }}</span></div>
+                <div class="flex items-center gap-2 font-bold"><span></span><span>{{ session('success') }}</span></div>
                 <button onclick="this.parentElement.style.display='none'" class="text-green-500 hover:text-green-800 font-bold text-xl">&times;</button>
             </div>
         @endif
@@ -91,134 +91,6 @@
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-            <h2 class="text-2xl font-black text-gray-800 flex items-center gap-2">
-                <span class="bg-blue-500 w-2 h-8 rounded-full inline-block"></span>
-                Manajemen Pesanan
-            </h2>
-            <form action="{{ route('admin.dashboard') }}" method="GET" class="flex gap-2 w-full md:w-auto">
-                <input type="text" name="search_order" value="{{ request('search_order') }}" placeholder="Cari Nama / ID..." class="border-blue-200 rounded-xl px-4 py-2 w-full md:w-64 focus:ring-blue-500 focus:border-blue-500">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 font-bold">🔍</button>
-            </form>
-        </div>
-
-        <div class="bg-white rounded-3xl shadow-xl shadow-blue-50/50 border border-blue-100 overflow-hidden mb-12">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-blue-500 text-white">
-                        <tr>
-                            <th class="py-5 px-6 text-xs font-bold uppercase">ID</th>
-                            <th class="py-5 px-6 text-xs font-bold uppercase">Pelanggan</th>
-                            <th class="py-5 px-6 text-xs font-bold uppercase">Total</th>
-                            <th class="py-5 px-6 text-xs font-bold uppercase">Bukti Bayar</th>
-                            <th class="py-5 px-6 text-xs font-bold uppercase">Status</th>
-                            <th class="py-5 px-6 text-xs font-bold uppercase text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-blue-50">
-    @forelse($orders as $order)
-        @php
-            $statusColor = match($order->status) {
-                'pending'   => 'bg-yellow-400 text-yellow-900',
-                'paid'      => 'bg-blue-400 text-blue-900',
-                'shipped'   => 'bg-purple-400 text-purple-900',
-                'completed' => 'bg-green-400 text-green-900',
-                'cancelled' => 'bg-red-400 text-red-900',
-                default     => 'bg-gray-400 text-gray-900'
-            };
-        @endphp
-
-        <tr class="hover:bg-blue-50/30 transition duration-200">
-            <td class="py-4 px-6 font-bold text-blue-600">#{{ $order->id }}</td>
-            <td class="py-4 px-6">
-                <p class="font-bold text-gray-800">{{ $order->customer_name }}</p>
-                <p class="text-xs text-gray-400">{{ $order->customer_phone }}</p>
-            </td>
-            <td class="py-4 px-6 font-bold text-gray-700">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
-            <td class="py-4 px-6">
-                @if($order->payment_proof)
-                    <a href="{{ asset('storage/payment_proofs/'.$order->payment_proof) }}" target="_blank" class="text-blue-500 underline text-xs font-bold">Lihat Bukti</a>
-                @else
-                    <span class="text-gray-400 text-xs">COD / -</span>
-                @endif
-            </td>
-            
-            <td class="py-4 px-6">
-                <span class="px-3 py-1 rounded-full text-xs font-bold {{ $statusColor }}">
-                    {{ ucfirst($order->status) }}
-                </span>
-            </td>
-
-            <td class="py-4 px-6 text-center">
-                <div class="flex items-center justify-center gap-2">
-                    <button onclick="openModal('edit-order-{{ $order->id }}')" class="bg-blue-50 text-blue-600 p-2 rounded-xl hover:bg-blue-500 hover:text-white transition shadow-sm border border-blue-100" title="Edit Data">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                    </button>
-
-                    <form action="{{ route('orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Hapus pesanan ini permanen?');">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="bg-rose-50 text-rose-500 p-2 rounded-xl hover:bg-rose-500 hover:text-white transition shadow-sm border border-rose-100" title="Hapus">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </form>
-                </div>
-
-                <div id="edit-order-{{ $order->id }}" class="fixed inset-0 z-50 hidden overflow-y-auto text-left" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('edit-order-{{ $order->id }}')"></div>
-                    <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                        <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl border border-blue-100">
-                            <div class="bg-blue-600 px-6 py-4 flex justify-between items-center">
-                                <h3 class="text-lg font-bold text-white">✏️ Edit Pesanan #{{ $order->id }}</h3>
-                                <button onclick="closeModal('edit-order-{{ $order->id }}')" class="text-blue-100 hover:text-white text-2xl font-bold">&times;</button>
-                            </div>
-                            <form action="{{ route('orders.update', $order->id) }}" method="POST" class="px-6 py-6 bg-blue-50/30">
-                                @csrf @method('PUT')
-                                <div class="grid grid-cols-1 gap-4">
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="block text-xs font-bold mb-1 text-gray-600">Nama Pelanggan</label>
-                                            <input type="text" name="customer_name" value="{{ $order->customer_name }}" class="w-full border-gray-200 rounded-xl p-3 text-sm">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold mb-1 text-gray-600">No. WhatsApp</label>
-                                            <input type="text" name="customer_phone" value="{{ $order->customer_phone }}" class="w-full border-gray-200 rounded-xl p-3 text-sm">
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold mb-1 text-gray-600">Alamat</label>
-                                        <textarea name="customer_address" rows="2" class="w-full border-gray-200 rounded-xl p-3 text-sm">{{ $order->customer_address }}</textarea>
-                                    </div>
-                                    
-                                    <div>
-                                        <label class="block text-xs font-bold mb-1 text-gray-600">Status</label>
-                                        <select name="status" class="w-full border-gray-200 rounded-xl p-3 bg-white font-bold text-sm">
-                                            <option value="pending"   {{ $order->status == 'pending' ? 'selected' : '' }}>⏳ Pending (Menunggu)</option>
-                                            <option value="paid"      {{ $order->status == 'paid' ? 'selected' : '' }}>💰 Paid (Dibayar)</option>
-                                            <option value="shipped"   {{ $order->status == 'shipped' ? 'selected' : '' }}>🚚 Shipped (Dikirim)</option>
-                                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>✅ Completed (Selesai)</option>
-                                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>❌ Cancelled (Batal)</option>
-                                        </select>
-                                    </div>
-
-                                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg mt-2">Simpan Perubahan</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                </td>
-        </tr>
-    @empty
-        <tr><td colspan="6" class="py-8 text-center text-gray-500 font-medium">Belum ada pesanan masuk.</td></tr>
-    @endforelse
-</tbody>
-
-                </table>
-                <div class="px-6 py-4 bg-gray-50 border-t border-blue-100">
-                    {{ $orders->links() }}
-                </div>
-            </div>
-        </div>
 
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <h2 class="text-2xl font-black text-gray-800 flex items-center gap-2">
@@ -227,12 +99,12 @@
             </h2>
             <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                 <form action="{{ route('admin.dashboard') }}" method="GET" class="flex gap-2">
-                    <input type="text" name="search_product" value="{{ request('search_product') }}" placeholder="Cari Produk..." class="border-pink-200 rounded-xl px-4 py-2 w-full md:w-48 focus:ring-pink-500 focus:border-pink-500">
-                    <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-xl hover:bg-pink-600 font-bold">🔍</button>
+                    <input type="text" name="search_product" value="{{ request('search_product') }}" placeholder="Cari Produk..." class="border-pink-200 border rounded-xl px-4 py-2 w-full md:w-48 focus:ring-2 focus:ring-pink-500 focus:outline-none">
+                    <button type="submit" class="bg-pink-500 text-white px-5 py-2 rounded-xl hover:bg-pink-600 font-bold shadow-sm transition">Cari</button>
                 </form>
 
                 <a href="{{ route('orders.index') }}" class="bg-white border-2 border-pink-100 text-gray-600 hover:text-pink-600 hover:border-pink-300 font-bold py-2.5 px-6 rounded-2xl shadow-sm flex items-center transition gap-2 hover:shadow-md justify-center">
-                    📦 <span class="hidden sm:inline">Cek Pesanan</span>
+                     <span class="hidden sm:inline">Cek Pesanan</span>
                 </a>
                 <button onclick="openModal('create-product-modal')" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-2.5 px-6 rounded-2xl shadow-lg shadow-pink-500/30 flex items-center transition transform hover:-translate-y-1 gap-2 justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
@@ -272,11 +144,11 @@
                                 <td class="py-4 px-6 text-center">
                                     @php $po = $product->preorder; $today = date('Y-m-d'); @endphp
                                     @if($po)
-                                        @if($today < $po->start_date) <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full border border-purple-200">⏳ Soon</span>
-                                        @elseif($today >= $po->start_date && $today <= $po->end_date) <span class="bg-pink-100 text-pink-600 text-xs font-bold px-3 py-1 rounded-full border border-pink-200 animate-pulse">🔥 Open PO</span>
-                                        @else <span class="bg-gray-200 text-gray-500 text-xs font-bold px-3 py-1 rounded-full border border-gray-300">🔒 Closed</span>
+                                        @if($today < $po->start_date) <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full border border-purple-200"> Soon</span>
+                                        @elseif($today >= $po->start_date && $today <= $po->end_date) <span class="bg-pink-100 text-pink-600 text-xs font-bold px-3 py-1 rounded-full border border-pink-200 animate-pulse"> Open PO</span>
+                                        @else <span class="bg-gray-200 text-gray-500 text-xs font-bold px-3 py-1 rounded-full border border-gray-300"> Closed</span>
                                         @endif
-                                    @else <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full border border-green-200">✅ Ready</span>
+                                    @else <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full border border-green-200"> Ready</span>
                                     @endif
                                 </td>
                                 <td class="py-4 px-6 text-center">
@@ -296,8 +168,8 @@
                                         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('edit-modal-{{ $product->id }}')"></div>
                                         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                                             <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-pink-100">
-                                                <div class="bg-blue-500 px-6 py-4 flex justify-between items-center"><h3 class="text-lg font-bold text-white">✏️ Edit Produk</h3><button onclick="closeModal('edit-modal-{{ $product->id }}')" class="text-white hover:text-blue-100 text-2xl font-bold">&times;</button></div>
-                                                <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-blue-50/30">
+                                                <div class="bg-blue-500 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Edit Produk</h3><button onclick="closeModal('edit-modal-{{ $product->id }}')" class="text-white hover:text-blue-100 text-2xl font-bold transition">&times;</button></div>
+                                                <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-gray-50">
                                                     @csrf @method('PUT')
                                                     <div class="grid grid-cols-1 gap-4">
                                                         <div class="grid grid-cols-2 gap-4">
@@ -311,8 +183,8 @@
                                                         <div><label class="block text-sm font-bold mb-1 text-gray-600">Label</label>
                                                             <select name="badge" class="w-full border-gray-200 rounded-xl p-3 bg-white">
                                                                 <option value="">-- Kosong --</option>
-                                                                <option value="Best Seller" {{ $product->badge == 'Best Seller' ? 'selected' : '' }}>🔥 Best Seller</option>
-                                                                <option value="Termurah" {{ $product->badge == 'Termurah' ? 'selected' : '' }}>💰 Termurah</option>
+                                                                <option value="Best Seller" {{ $product->badge == 'Best Seller' ? 'selected' : '' }}> Best Seller</option>
+                                                                <option value="Termurah" {{ $product->badge == 'Termurah' ? 'selected' : '' }}> Termurah</option>
                                                             </select>
                                                         </div>
                                                         <div><label class="block text-sm font-bold mb-1 text-gray-600">Deskripsi</label><textarea name="description" rows="2" class="w-full border-gray-200 rounded-xl p-3" required>{{ $product->description }}</textarea></div>
@@ -349,8 +221,8 @@
             </h2>
             <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                 <form action="{{ route('admin.dashboard') }}" method="GET" class="flex gap-2">
-                    <input type="text" name="search_menu" value="{{ request('search_menu') }}" placeholder="Cari Menu..." class="border-yellow-200 rounded-xl px-4 py-2 w-full md:w-48 focus:ring-yellow-400 focus:border-yellow-400">
-                    <button type="submit" class="bg-yellow-400 text-white px-4 py-2 rounded-xl hover:bg-yellow-500 font-bold">🔍</button>
+                    <input type="text" name="search_menu" value="{{ request('search_menu') }}" placeholder="Cari Menu..." class="border-yellow-200 border rounded-xl px-4 py-2 w-full md:w-48 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
+                    <button type="submit" class="bg-yellow-400 text-white px-5 py-2 rounded-xl hover:bg-yellow-500 font-bold shadow-sm transition">Cari</button>
                 </form>
 
                 <button onclick="openModal('create-menu-modal')" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2.5 px-6 rounded-2xl shadow-lg shadow-yellow-400/30 flex items-center gap-2 transition transform hover:-translate-y-1 justify-center">
@@ -404,8 +276,8 @@
                                     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('edit-menu-{{ $menu->id }}')"></div>
                                     <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                                         <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl border border-yellow-100">
-                                            <div class="bg-yellow-400 px-6 py-4 flex justify-between items-center"><h3 class="text-lg font-bold text-white">✏️ Edit Menu Spesial</h3><button onclick="closeModal('edit-menu-{{ $menu->id }}')" class="text-white hover:text-yellow-100 text-2xl font-bold">&times;</button></div>
-                                            <form action="{{ route('menus.update', $menu->id) }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-yellow-50/30">
+                                            <div class="bg-yellow-400 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Edit Menu Spesial</h3><button onclick="closeModal('edit-menu-{{ $menu->id }}')" class="text-white hover:text-yellow-100 text-2xl font-bold transition">&times;</button></div>
+                                            <form action="{{ route('menus.update', $menu->id) }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-gray-50">
                                                 @csrf @method('PUT')
                                                 <div class="grid grid-cols-1 gap-4">
                                                     <div><label class="block text-sm font-bold mb-1 text-gray-600">Nama Menu</label><input type="text" name="name" value="{{ $menu->name }}" class="w-full border-gray-200 rounded-xl p-3 focus:ring-yellow-400" required></div>
@@ -414,10 +286,10 @@
                                                         <div><label class="block text-sm font-bold mb-1 text-gray-600">Label</label>
                                                             <select name="badge" class="w-full border-gray-200 rounded-xl p-3 bg-white focus:ring-yellow-400">
                                                                 <option value="">-- Kosong --</option>
-                                                                <option value="Best Seller" {{ $menu->badge == 'Best Seller' ? 'selected' : '' }}>🔥 Best Seller</option>
-                                                                <option value="Recommended" {{ $menu->badge == 'Recommended' ? 'selected' : '' }}>⭐ Recommended</option>
-                                                                <option value="Pedas" {{ $menu->badge == 'Pedas' ? 'selected' : '' }}>🌶️ Pedas</option>
-                                                                <option value="Manis" {{ $menu->badge == 'Manis' ? 'selected' : '' }}>🍩 Manis</option>
+                                                                <option value="Best Seller" {{ $menu->badge == 'Best Seller' ? 'selected' : '' }}> Best Seller</option>
+                                                                <option value="Recommended" {{ $menu->badge == 'Recommended' ? 'selected' : '' }}> Recommended</option>
+                                                                <option value="Pedas" {{ $menu->badge == 'Pedas' ? 'selected' : '' }}>Pedas</option>
+                                                                <option value="Manis" {{ $menu->badge == 'Manis' ? 'selected' : '' }}>Manis</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -444,8 +316,8 @@
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('create-product-modal')"></div>
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-pink-100">
-                <div class="bg-pink-500 px-6 py-4 flex justify-between items-center"><h3 class="text-lg font-bold text-white">➕ Tambah Produk Jualan</h3><button onclick="closeModal('create-product-modal')" class="text-pink-100 hover:text-white text-2xl font-bold">&times;</button></div>
-                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-pink-50/30">
+                <div class="bg-pink-500 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Tambah Produk Jualan</h3><button onclick="closeModal('create-product-modal')" class="text-pink-100 hover:text-white text-2xl font-bold transition">&times;</button></div>
+                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-gray-50">
                     @csrf
                     <div class="grid grid-cols-1 gap-4">
                         <div class="grid grid-cols-2 gap-4">
@@ -459,8 +331,8 @@
                         <div><label class="block text-gray-600 text-sm font-bold mb-1">Label (Opsional)</label>
                             <select name="badge" class="w-full border-gray-200 rounded-xl p-3 bg-white focus:ring-pink-500">
                                 <option value="">-- Kosong --</option>
-                                <option value="Best Seller">🔥 Best Seller</option>
-                                <option value="Termurah">💰 Termurah</option>
+                                <option value="Best Seller"> Best Seller</option>
+                                <option value="Termurah"> Termurah</option>
                             </select>
                         </div>
                         <div><label class="block text-gray-600 text-sm font-bold mb-1">Deskripsi</label><textarea name="description" rows="3" class="w-full border-gray-200 rounded-xl p-3 focus:ring-pink-500" required></textarea></div>
@@ -474,7 +346,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold hover:from-pink-600 hover:to-rose-600 shadow-lg shadow-pink-500/30 transition transform hover:-translate-y-1">🚀 Simpan Produk</button>
+                        <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold hover:from-pink-600 hover:to-rose-600 shadow-lg shadow-pink-500/30 transition transform hover:-translate-y-1"> Simpan Produk</button>
                     </div>
                 </form>
             </div>
@@ -485,8 +357,8 @@
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeModal('create-menu-modal')"></div>
         <div class="flex min-h-full items-center justify-center p-4">
             <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg border border-yellow-100 animate-fade-in-down">
-                <div class="bg-yellow-400 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">🍔 Tambah Menu Baru</h3><button onclick="closeModal('create-menu-modal')" class="text-white text-2xl hover:text-yellow-100 font-bold">&times;</button></div>
-                <form action="{{ route('menus.store') }}" method="POST" enctype="multipart/form-data" class="p-6 bg-yellow-50/30">
+                <div class="bg-yellow-400 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Tambah Menu Baru</h3><button onclick="closeModal('create-menu-modal')" class="text-white text-2xl hover:text-yellow-100 font-bold transition">&times;</button></div>
+                <form action="{{ route('menus.store') }}" method="POST" enctype="multipart/form-data" class="p-6 bg-gray-50">
                     @csrf
                     <div class="space-y-4">
                         <div><label class="font-bold text-sm text-gray-600">Nama Menu</label><input type="text" name="name" class="w-full border-gray-200 rounded-xl p-3 focus:ring-yellow-400" required></div>
@@ -495,10 +367,10 @@
                             <div><label class="font-bold text-sm text-gray-600">Label (Opsional)</label>
                                 <select name="badge" class="w-full border-gray-200 rounded-xl p-3 bg-white focus:ring-yellow-400">
                                     <option value="">-- Kosong --</option>
-                                    <option value="Best Seller">🔥 Best Seller</option>
-                                    <option value="Recommended">⭐ Recommended</option>
-                                    <option value="Pedas">🌶️ Pedas</option>
-                                    <option value="Manis">🍩 Manis</option>
+                                    <option value="Best Seller"> Best Seller</option>
+                                    <option value="Recommended"> Recommended</option>
+                                    <option value="Pedas">Pedas</option>
+                                    <option value="Manis">Manis</option>
                                 </select>
                             </div>
                         </div>

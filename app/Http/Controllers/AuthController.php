@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // Jangan lupa import ini
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -22,7 +23,20 @@ class AuthController extends Controller
     $credentials = $request->validate([
         'email' => ['required', 'email'],
         'password' => ['required'],
+        'g-recaptcha-response' => ['required', function ($attribute, $value, $fail) {
+            $response = Http::withoutVerifying()->asForm()->post('https://www.recaptcha.net/recaptcha/api/siteverify', [
+                'secret' => env('RECAPTCHA_SECRET_KEY'),
+                'response' => $value,
+                'remoteip' => request()->ip()
+            ]);
+            if (!$response->json('success')) {
+                $fail('Verifikasi reCAPTCHA gagal.');
+            }
+        }],
     ]);
+    
+    // Hapus g-recaptcha-response dari credentials sebelum dicheck
+    unset($credentials['g-recaptcha-response']);
 
     // 2. Coba Login
     if (Auth::attempt($credentials)) {
@@ -42,7 +56,7 @@ class AuthController extends Controller
 
     // 4. Kalau Gagal Login
     return back()->withErrors([
-        'email' => 'Email atau password salah wak!',
+        'email' => 'Email atau password yang Anda masukkan salah.',
     ])->onlyInput('email');
 }
 
@@ -69,6 +83,16 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed', // confirmed ngecek password_confirmation
+            'g-recaptcha-response' => ['required', function ($attribute, $value, $fail) {
+                $response = Http::withoutVerifying()->asForm()->post('https://www.recaptcha.net/recaptcha/api/siteverify', [
+                    'secret' => env('RECAPTCHA_SECRET_KEY'),
+                    'response' => $value,
+                    'remoteip' => request()->ip()
+                ]);
+                if (!$response->json('success')) {
+                    $fail('Verifikasi reCAPTCHA gagal.');
+                }
+            }],
         ]);
 
         User::create([

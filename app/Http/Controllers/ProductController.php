@@ -23,7 +23,7 @@ class ProductController extends Controller
         $productQuery = Product::query();
         $menuQuery    = Menu::query();
 
-        // Logika Pencarian
+        // Logika Pencarian Umum (Keyword)
         if ($request->has('keyword') && $request->keyword != null) {
             $keyword = $request->keyword;
 
@@ -38,6 +38,12 @@ class ProductController extends Controller
                 $q->where('name', 'LIKE', '%'.$keyword.'%')
                   ->orWhere('description', 'LIKE', '%'.$keyword.'%');
             });
+        }
+
+        // Logika Filter Berdasarkan Badge (KHUSUS Menu Kami)
+        if ($request->has('badge') && $request->badge != null) {
+            $badge = $request->badge;
+            $menuQuery->where('badge', 'LIKE', '%'.$badge.'%');
         }
 
         // Eksekusi Query
@@ -125,7 +131,7 @@ class ProductController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.dashboard')->with('success', 'Produk berhasil ditambahkan! 🚀');
+        return redirect()->route('admin.dashboard')->with('success', 'Produk berhasil ditambahkan!');
     }
 
     // B. PROSES UPDATE PRODUK
@@ -177,7 +183,7 @@ class ProductController extends Controller
             $product->preorder()->delete();
         }
 
-        return redirect()->route('admin.dashboard')->with('success', 'Produk berhasil diperbarui! ✨');
+        return redirect()->route('admin.dashboard')->with('success', 'Produk berhasil diperbarui!');
     }
 
     // C. HAPUS PRODUK
@@ -192,6 +198,6 @@ class ProductController extends Controller
         // 2. Hapus Data dari Database
         $product->delete();
 
-        return redirect()->route('admin.dashboard')->with('success', 'Produk berhasil dihapus! 🗑️');
+        return redirect()->route('admin.dashboard')->with('success', 'Produk berhasil dihapus!');
     }
 }

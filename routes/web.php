@@ -27,6 +27,9 @@ Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart
 // 3. Hapus Barang dari Keranjang
 Route::get('/cart/remove/{id}', [OrderController::class, 'removeCart'])->name('cart.remove');
 
+// 3.5. Sesuaikan Jumlah Keranjang
+Route::get('/cart/adjust/{id}/{qty}', [OrderController::class, 'adjustCart'])->name('cart.adjust');
+
 // 4. Proses Checkout (Simpan Pesanan)
 Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout.process');
 

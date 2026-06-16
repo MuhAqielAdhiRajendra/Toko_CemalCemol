@@ -28,7 +28,7 @@
                     <span class="px-2 py-1 rounded text-xs font-bold uppercase 
                         {{ $order->status == 'pending' ? 'bg-yellow-200 text-yellow-800' : '' }}
                         {{ $order->status == 'paid' ? 'bg-green-200 text-green-800' : '' }}
-                        {{ $order->status == 'shipped' ? 'bg-blue-200 text-blue-800' : '' }}
+                        {{ $order->status == 'dikirim' ? 'bg-blue-200 text-blue-800' : '' }}
                     ">
                         {{ $order->status }}
                     </span>
@@ -43,7 +43,7 @@
                     @method('PUT') <select name="status" class="border p-2 rounded w-full">
                         <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending (Menunggu Bayar)</option>
                         <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>Paid (Sudah Dibayar)</option>
-                        <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped (Sedang Dikirim)</option>
+                        <option value="dikirim" {{ $order->status == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
                         <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Completed (Selesai)</option>
                         <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled (Batal)</option>
                     </select>

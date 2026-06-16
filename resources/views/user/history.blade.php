@@ -39,7 +39,7 @@
         
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-3xl font-black text-slate-800 tracking-tight">📦 Riwayat Pesanan</h1>
+                <h1 class="text-3xl font-black text-slate-800 tracking-tight"> Riwayat Pesanan</h1>
                 <p class="text-slate-500 mt-1 text-sm">Pantau terus barang jajanmu sampai depan rumah.</p>
             </div>
             <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm text-sm font-bold text-slate-600 flex items-center gap-2">
@@ -54,17 +54,17 @@
                     $statusColor = match($order->status) {
                         'pending' => 'bg-amber-100 text-amber-700 border-amber-200',
                         'paid' => 'bg-blue-100 text-blue-700 border-blue-200',
-                        'shipped' => 'bg-purple-100 text-purple-700 border-purple-200',
+                        'dikirim' => 'bg-purple-100 text-purple-700 border-purple-200',
                         'completed' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
                         'cancelled' => 'bg-rose-100 text-rose-700 border-rose-200',
                         default => 'bg-gray-100 text-gray-700 border-gray-200'
                     };
                     $statusLabel = match($order->status) {
-                        'pending' => '⏳ Menunggu',
-                        'paid' => '💰 Sudah Bayar',
-                        'shipped' => '🚚 Dikirim',
-                        'completed' => '✅ Selesai',
-                        'cancelled' => '❌ Dibatalkan',
+                        'pending' => ' Menunggu',
+                        'paid' => ' Sudah Bayar',
+                        'dikirim' => ' Dikirim',
+                        'completed' => ' Selesai',
+                        'cancelled' => ' Dibatalkan',
                         default => 'Unknown'
                     };
                 @endphp
@@ -77,7 +77,7 @@
                         
                         <div class="flex items-start gap-4">
                             <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                                <span class="text-2xl">🛍️</span>
+                                <span class="text-2xl">️</span>
                             </div>
                             <div>
                                 <div class="flex items-center gap-3 mb-1">
@@ -88,7 +88,7 @@
                                     </span>
                                 </div>
                                 <p class="text-xs text-slate-400 font-medium">
-                                    📅 {{ $order->created_at->format('d M Y, H:i') }} WIB
+                                     {{ $order->created_at->format('d M Y, H:i') }} WIB
                                 </p>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                     <h3 class="text-xl font-bold text-slate-800">Belum ada pesanan</h3>
                     <p class="text-slate-500 mb-6 text-sm">Riwayat belanjamu masih bersih nih wak.</p>
                     <a href="{{ route('home') }}" class="inline-block bg-pink-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-pink-600/30 hover:bg-pink-700 hover:-translate-y-1 transition">
-                        Gas Belanja Dulu! 🚀
+                        Gas Belanja Dulu! 
                     </a>
                 </div>
             @endforelse
