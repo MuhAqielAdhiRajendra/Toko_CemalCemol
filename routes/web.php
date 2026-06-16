@@ -73,8 +73,8 @@ Route::middleware(['auth', 'cekrole:admin'])->group(function () {
     //D. Menu 
     Route::post('/menus', [MenuController::class, 'store'])->name('menus.store');
     Route::delete('/menus/{id}', [MenuController::class, 'destroy'])->name('menus.destroy');
-    Route::resource('orders', OrderController::class);
-    Route::resource('menus', MenuController::class);
+    Route::resource('orders', OrderController::class)->except(['index', 'show', 'update']);
+    Route::resource('menus', MenuController::class)->except(['store', 'destroy']);
 });
 
 
