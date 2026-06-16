@@ -43,6 +43,12 @@ jobs:
     - name: Generate App Key
       run: php artisan key:generate
 
+    - name: Prepare Storage Directories
+      run: |
+        mkdir -p storage/framework/cache/data
+        mkdir -p storage/framework/sessions
+        mkdir -p storage/framework/views
+
     # 4. Bikin database SQLite untuk testing dan Migrate
     - name: Buat Database SQLite untuk Testing
       run: |
