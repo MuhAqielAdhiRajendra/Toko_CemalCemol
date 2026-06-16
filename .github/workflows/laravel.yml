@@ -117,9 +117,14 @@ jobs:
           # Setelah install berhasil dan cache bersih, jalankan ulang package discover manual
           php artisan package:discover --ansi
           
-          # Install library frontend dan build
-          npm install
-          npm run build
+          # Install library frontend dan build (Hanya jika npm tersedia di server)
+          if command -v npm &> /dev/null; then
+            npm install
+            npm run build
+          else
+            echo "Peringatan: Perintah 'npm' tidak ditemukan di server. Lewati proses build frontend."
+            echo "Jika butuh frontend/UI, pastikan NodeJS terinstall di VPS kamu."
+          fi
           
           # Jalankan migrasi database
           php artisan migrate --force
