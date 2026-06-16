@@ -77,6 +77,14 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
+          # Berhenti otomatis jika ada perintah yang error
+          set -e
+          
+          # Load profil environment (seperti NVM) agar perintah 'npm' bisa terbaca
+          if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
+          if [ -s "$HOME/.nvm/nvm.sh" ]; then source "$HOME/.nvm/nvm.sh"; fi
+          export PATH=$PATH:/usr/local/bin:/usr/bin
+          
           # path server
           cd /home/muhaqieladhirajendra/htdocs/muhaqieladhirajendra.dev
           
