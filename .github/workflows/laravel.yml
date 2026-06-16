@@ -62,3 +62,37 @@ jobs:
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    # Hanya jalan kalau nge-push ke main
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - name: Deploy to Server via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          # Ganti /var/www/html/namaproject dengan path (lokasi) project kamu di server
+          cd /var/www/html/namaproject
+          
+          # Ambil kode terbaru dari github
+          git pull origin main
+          
+          # Install library backend (tanpa paket dev)
+          composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+          
+          # Install library frontend dan build
+          npm install
+          npm run build
+          
+          # Jalankan migrasi database
+          php artisan migrate --force
+          
+          # Clear dan re-cache config, route, dan view
+          php artisan optimize:clear
+          php artisan optimize
