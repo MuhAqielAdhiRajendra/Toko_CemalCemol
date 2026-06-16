@@ -91,8 +91,22 @@ jobs:
           # path server
           cd /home/muhaqieladhirajendra/htdocs/muhaqieladhirajendra.dev
           
-          # Ambil kode terbaru dari github
-          git pull origin main
+          # Cek apakah folder ini sudah jadi git repo
+          if [ ! -d ".git" ]; then
+            echo "Git belum diinisialisasi. Melakukan setup awal..."
+            git init
+            
+            git remote add origin https://github.com/MuhAqielAdhiRajendra/Toko_CemalCemol.git
+            
+            git fetch --all
+            # Force timpa file bawaan CloudPanel (kayak index.php default) pakai kode lu
+            git reset --hard origin/main
+            git branch -m main
+          else
+            echo "Git sudah siap, menarik kode terbaru..."
+            git reset --hard origin/main
+            git pull origin main
+          fi
           
           # Install library backend (tanpa paket dev)
           composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
