@@ -46,7 +46,7 @@
             </div>
 
             <div class="mb-6 flex justify-center">
-                <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}" data-callback="enableBtn" data-expired-callback="disableBtn"></div>
+                <div class="g-recaptcha" data-sitekey="{{ config('recaptcha.site_key') }}" data-callback="enableBtn" data-expired-callback="disableBtn"></div>
             </div>
 
             <button type="submit" id="submitBtn" disabled class="w-full bg-pink-600 text-white p-2.5 rounded-full hover:bg-pink-700 font-bold shadow-md shadow-pink-500/30 transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-pink-600 disabled:active:scale-100">
