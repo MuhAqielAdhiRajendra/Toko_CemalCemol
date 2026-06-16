@@ -1,44 +1,31 @@
 stages:
-  - build
   - deploy
 
-build_assets:
-  stage: build
+deploy_production:
+  stage: deploy
+  # Kita pakai image Node supaya bisa npm install & vite build
   image: node:20-alpine
   tags:
     - azure-runner
-  script:
-    - echo "Menginstal dependensi Node.js & Build Assets..."
-    - npm install
-    - npm run build
-  artifacts:
-    paths:
-      - public/build/
-    expire_in: 1 hour
-  only:
-    - main
-
-deploy_laravel_ke_azure:
-  stage: deploy
-  image: alpine:latest
-  tags:              # <--- DI SINI JUGA WAJIB DITAMBAHIN
-    - azure-runner
   before_script:
-    # Instal OpenSSH & Rsync di dalam container GitLab Runner
+    # Instal OpenSSH & Rsync di dalam container Node Alpine
     - apk add --no-cache openssh-client rsync
-    # Setup SSH Key dari GitLab CI/CD Variables
+    # Setup SSH Key
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    # Menambahkan IP Server ke known_hosts agar SSH tidak diblokir
     - ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
   script:
-    - echo "Transfer kodingan ke Azure VM via Rsync..."
-    # rsync mentransfer kodingan dan hasil build Vite (dari tahap sebelumnya) ke server
+    - echo "1. Menginstal dependensi Node.js & Build Assets Vite..."
+    - npm install
+    - npm run build
+    
+    - echo "2. Transfer kodingan (termasuk hasil build) ke Azure VM via Rsync..."
+    # Rsync langsung kirim kodingan dari Runner ke Azure, tanpa mampir ke GitLab Artifacts!
     - rsync -avz --exclude='.git' --exclude='node_modules' --exclude='/storage' --exclude='.env' ./ $SERVER_USER@$SERVER_HOST:/var/www/muhaqieladhirajendra.dev/
     
-    - echo "Menjalankan Command Laravel di dalam Azure VM via SSH..."
+    - echo "3. Menjalankan Command Laravel di dalam Azure VM via SSH..."
     - ssh $SERVER_USER@$SERVER_HOST "
         cd /var/www/muhaqieladhirajendra.dev &&
         
@@ -62,6 +49,6 @@ deploy_laravel_ke_azure:
         (chown -R www-data:www-data /var/www/muhaqieladhirajendra.dev || sudo chown -R www-data:www-data /var/www/muhaqieladhirajendra.dev || true) &&
         (chmod -R 777 storage bootstrap/cache || sudo chmod -R 777 storage bootstrap/cache)
       "
-    - echo "Deploy via SSH Sukses"
+    - echo "Deploy Sukses tanpa drama Artifacts!"
   only:
     - main
