@@ -111,7 +111,10 @@ jobs:
           # Install library backend (tanpa paket dev) dan skip scripts bawaan agar tidak bentrok dengan package dev yang dihapus
           composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts
           
-          # Setelah install berhasil, jalankan ulang package discover manual
+          # Hapus cache lama agar Laravel tidak mencoba meload package dev yang baru saja dihapus
+          rm -f bootstrap/cache/*.php
+          
+          # Setelah install berhasil dan cache bersih, jalankan ulang package discover manual
           php artisan package:discover --ansi
           
           # Install library frontend dan build
