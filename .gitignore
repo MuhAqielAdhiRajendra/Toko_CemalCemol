@@ -48,9 +48,6 @@ Icon?
 /resources/js/dist
 /resources/css/dist
 # PHPUnit
-/phpunit.xml
-/phpunit.xml.dist
-# Misc
 .env.backup
 .env.testing
 .env.production
