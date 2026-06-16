@@ -1,17 +1,63 @@
 stages:
+  - build
   - deploy
+
+build_assets:
+  stage: build
+  image: node:20-alpine
+  script:
+    - echo "Menginstal dependensi Node.js & Build Assets..."
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - public/build/
+    expire_in: 1 hour
+  only:
+    - main
 
 deploy_laravel_ke_azure:
   stage: deploy
+  image: alpine:latest
+  before_script:
+    # Instal OpenSSH & Rsync di dalam container GitLab Runner
+    - apk add --no-cache openssh-client rsync
+    # Setup SSH Key dari GitLab CI/CD Variables
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    # Menambahkan IP Server ke known_hosts agar SSH tidak diblokir
+    - ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
   script:
-    - echo "Mulai memindahkan kodingan ke folder web..."
-    - cp -r ./* /var/www/muhaqieladhirajendra.dev/
-    - cd /var/www/muhaqieladhirajendra.dev
-    - echo "Menginstal dependensi (Bismillah RAM 1GB Azure kuat tahan OOM!)..."
-    - composer install --optimize-autoloader --no-dev
-    - cp .env.example .env
-    - php artisan key:generate
-    - chmod -R 777 storage bootstrap/cache
-    - echo "Deploy Sukses"
+    - echo "Transfer kodingan ke Azure VM via Rsync..."
+    # rsync mentransfer kodingan dan hasil build Vite (dari tahap sebelumnya) ke server
+    - rsync -avz --exclude='.git' --exclude='node_modules' --exclude='/storage' --exclude='.env' ./ $SERVER_USER@$SERVER_HOST:/var/www/muhaqieladhirajendra.dev/
+    
+    - echo "Menjalankan Command Laravel di dalam Azure VM via SSH..."
+    - ssh $SERVER_USER@$SERVER_HOST "
+        cd /var/www/muhaqieladhirajendra.dev &&
+        
+        echo 'Menginstal dependensi PHP...' &&
+        composer install --optimize-autoloader --no-dev &&
+        
+        echo 'Konfigurasi .env...' &&
+        if [ ! -f .env ]; then cp .env.example .env; php artisan key:generate; fi &&
+        
+        echo 'Migrasi Database...' &&
+        php artisan migrate --force &&
+        
+        echo 'Membuat Storage Link...' &&
+        php artisan storage:link || true &&
+        
+        echo 'Optimasi Cache Laravel...' &&
+        php artisan optimize:clear &&
+        php artisan optimize &&
+        
+        echo 'Mengatur permission folder...' &&
+        (chown -R www-data:www-data /var/www/muhaqieladhirajendra.dev || sudo chown -R www-data:www-data /var/www/muhaqieladhirajendra.dev || true) &&
+        (chmod -R 777 storage bootstrap/cache || sudo chmod -R 777 storage bootstrap/cache)
+      "
+    - echo "Deploy via SSH Sukses"
   only:
     - main
