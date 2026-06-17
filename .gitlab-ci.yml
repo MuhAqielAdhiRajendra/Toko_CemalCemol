@@ -22,11 +22,9 @@ deploy_production:
     - npm run build
     
     - echo "2. Transfer kodingan ke Azure VM via Rsync..."
-    # PATH UDAH DIGANTI KE /home/...
     - rsync -avz --exclude='.git' --exclude='node_modules' --exclude='/storage' --exclude='.env' ./ $SERVER_USER@$SERVER_HOST:/home/muhaqieladhirajendra/htdocs/muhaqieladhirajendra.dev/
     
     - echo "3. Menjalankan Command Laravel di dalam Azure VM via SSH..."
-    # PATH UDAH DIGANTI KE /home/...
     - ssh $SERVER_USER@$SERVER_HOST "
         cd /home/muhaqieladhirajendra/htdocs/muhaqieladhirajendra.dev &&
         
