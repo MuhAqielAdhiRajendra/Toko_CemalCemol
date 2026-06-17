@@ -118,9 +118,9 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-slate-800">Belum ada pesanan</h3>
-                    <p class="text-slate-500 mb-6 text-sm">Riwayat belanjamu masih bersih nih wak.</p>
+                    <p class="text-slate-500 mb-6 text-sm">Anda belum memiliki riwayat pesanan saat ini.</p>
                     <a href="{{ route('home') }}" class="inline-block bg-pink-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-pink-600/30 hover:bg-pink-700 hover:-translate-y-1 transition">
-                        Gas Belanja Dulu! 
+                        Mulai Belanja Sekarang
                     </a>
                 </div>
             @endforelse

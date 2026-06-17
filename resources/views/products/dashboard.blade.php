@@ -95,7 +95,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <h2 class="text-2xl font-black text-gray-800 flex items-center gap-2">
                 <span class="bg-pink-500 w-2 h-8 rounded-full inline-block"></span>
-                Daftar Produk Jualan
+                Daftar Preorder Product
             </h2>
             <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                 <form action="{{ route('admin.dashboard') }}" method="GET" class="flex gap-2">
@@ -158,7 +158,7 @@
                                 <td class="py-4 px-6 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button onclick="openModal('edit-modal-{{ $product->id }}')" class="bg-blue-50 text-blue-600 p-2.5 rounded-xl hover:bg-blue-500 hover:text-white transition shadow-sm border border-blue-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
-                                        <form onsubmit="return confirm('Yakin hapus?');" action="{{ route('products.destroy', $product->id) }}" method="POST">
+                                        <form onsubmit="return confirm('Yakin hapus?');" action="{{ route('preorders.destroy', $product->id) }}" method="POST">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="bg-rose-50 text-rose-500 p-2.5 rounded-xl hover:bg-rose-500 hover:text-white transition shadow-sm border border-rose-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                                         </form>
@@ -168,8 +168,8 @@
                                         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('edit-modal-{{ $product->id }}')"></div>
                                         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                                             <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-pink-100">
-                                                <div class="bg-blue-500 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Edit Produk</h3><button onclick="closeModal('edit-modal-{{ $product->id }}')" class="text-white hover:text-blue-100 text-2xl font-bold transition">&times;</button></div>
-                                                <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-gray-50">
+                                                <div class="bg-blue-500 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Edit Preorder Product</h3><button onclick="closeModal('edit-modal-{{ $product->id }}')" class="text-white hover:text-blue-100 text-2xl font-bold transition">&times;</button></div>
+                                                <form action="{{ route('preorders.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-gray-50">
                                                     @csrf @method('PUT')
                                                     <div class="grid grid-cols-1 gap-4">
                                                         <div class="grid grid-cols-2 gap-4">
@@ -217,7 +217,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 mt-16">
             <h2 class="text-2xl font-black text-gray-800 flex items-center gap-2">
                 <span class="bg-yellow-500 w-2 h-8 rounded-full inline-block"></span>
-                Daftar Menu Spesial
+                Daftar Menu
             </h2>
             <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                 <form action="{{ route('admin.dashboard') }}" method="GET" class="flex gap-2">
@@ -276,7 +276,7 @@
                                     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('edit-menu-{{ $menu->id }}')"></div>
                                     <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                                         <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl border border-yellow-100">
-                                            <div class="bg-yellow-400 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Edit Menu Spesial</h3><button onclick="closeModal('edit-menu-{{ $menu->id }}')" class="text-white hover:text-yellow-100 text-2xl font-bold transition">&times;</button></div>
+                                            <div class="bg-yellow-400 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Edit Menu</h3><button onclick="closeModal('edit-menu-{{ $menu->id }}')" class="text-white hover:text-yellow-100 text-2xl font-bold transition">&times;</button></div>
                                             <form action="{{ route('menus.update', $menu->id) }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-gray-50">
                                                 @csrf @method('PUT')
                                                 <div class="grid grid-cols-1 gap-4">
@@ -316,8 +316,8 @@
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('create-product-modal')"></div>
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-pink-100">
-                <div class="bg-pink-500 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Tambah Produk Jualan</h3><button onclick="closeModal('create-product-modal')" class="text-pink-100 hover:text-white text-2xl font-bold transition">&times;</button></div>
-                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-gray-50">
+                <div class="bg-pink-500 px-6 py-4 flex justify-between items-center rounded-t-3xl"><h3 class="text-lg font-bold text-white">Tambah Preorder Product</h3><button onclick="closeModal('create-product-modal')" class="text-pink-100 hover:text-white text-2xl font-bold transition">&times;</button></div>
+                <form action="{{ route('preorders.store') }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 bg-gray-50">
                     @csrf
                     <div class="grid grid-cols-1 gap-4">
                         <div class="grid grid-cols-2 gap-4">

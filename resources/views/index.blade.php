@@ -12,6 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
         body { font-family: 'Poppins', sans-serif; }
         
         /* Animasi Tombol WA */
@@ -33,6 +34,29 @@
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
 
+    @php
+        $hasOpenPreorder = false;
+        $today = date('Y-m-d');
+        if(isset($products)) {
+            foreach($products as $p) {
+                if($p->preorder && $today >= $p->preorder->start_date && $today <= $p->preorder->end_date) {
+                    $hasOpenPreorder = true;
+                    break;
+                }
+            }
+        }
+    @endphp
+
+    @if($hasOpenPreorder)
+    <a href="#preorder" 
+       class="fixed bottom-6 left-6 bg-pink-500 text-white p-3 md:p-4 rounded-full shadow-2xl hover:bg-pink-600 transition duration-300 z-50 group flex items-center gap-2 border-4 border-white animate-bounce-slow">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 md:w-6 md:h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap font-bold hidden md:inline">Preorder Tersedia</span>
+    </a>
+    @endif
+
     <a href="https://wa.me/6285726559608?text=Halo%20Admin,%20mau%20pesan%20Risol%20Mayo%20Terenak%20di%20Solo%20dong..." target="_blank" 
        class="fixed bottom-6 right-6 bg-green-500 text-white p-3 md:p-4 rounded-full shadow-2xl hover:bg-green-600 transition duration-300 z-50 group flex items-center gap-2 border-4 border-white animate-bounce-slow">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
@@ -41,39 +65,44 @@
         <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap font-bold hidden md:inline">Pesan Risol Enak</span>
     </a>
 
-    <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-pink-100">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <a href="/" class="text-2xl font-bold text-pink-500 hover:text-pink-600 transition flex items-center gap-2">
-                    Cemal<span class="bg-pink-500 text-white px-2 py-1 rounded-xl transform -rotate-2">Cemol</span>
-                </a>
-
-                <div class="flex items-center gap-4 md:hidden">
-                    <a href="{{ route('cart.index') }}" class="relative text-gray-500 hover:text-pink-600 transition p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
-                        <span class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white">{{ count((array) session('cart')) }}</span>
+    <nav class="w-full bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-2xl font-extrabold tracking-tight text-slate-900">
+                        Cemal<span class="text-pink-500">Cemol.</span>
                     </a>
-                    <button id="mobile-menu-btn" class="text-gray-600 transition-transform duration-300">
+                </div>
+                
+                <div class="flex items-center gap-4 md:hidden">
+                    <a href="{{ route('cart.index') }}" class="relative text-slate-500 hover:text-pink-500 transition p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
+                        <span class="absolute -top-1 -right-1 bg-pink-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white">{{ count((array) session('cart')) }}</span>
+                    </a>
+                    <button id="mobile-menu-btn" class="text-slate-600 transition-transform duration-300">
                         <svg id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
                         <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="/" class="text-gray-500 hover:text-pink-600 font-medium text-sm transition">Beranda</a>
-                    <a href="{{ route('cart.index') }}" class="relative text-gray-500 hover:text-pink-600 transition p-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
-                        <span class="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white">{{ count((array) session('cart')) }}</span>
-                    </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#beranda" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Beranda</a>
+                    <a href="#tentang-kami" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Tentang Kami</a>
+                    <a href="#menu" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Menu Spesial</a>
+                    <a href="#preorder" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Preorder</a>
                     <div class="h-6 w-px bg-gray-200 mx-2"></div>
                     @guest
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-pink-600 font-semibold text-sm">Masuk</a>
-                        <a href="{{ route('register') }}" class="bg-pink-600 text-white px-4 py-2 rounded-full hover:bg-pink-700 font-semibold text-sm shadow-md">Daftar</a>
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Masuk</a>
+                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-pink-500 rounded-full hover:bg-pink-600 transition-all shadow-sm shadow-pink-500/20 active:scale-95">Daftar</a>
                     @endguest
                     @auth
-                        <a href="{{ route('orders.history') }}" class="text-gray-600 hover:text-pink-600 font-medium text-sm"> Pesanan</a>
+                        <a href="{{ route('cart.index') }}" class="relative text-slate-500 hover:text-pink-500 transition p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
+                            <span class="absolute top-0 right-0 bg-pink-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white">{{ count((array) session('cart')) }}</span>
+                        </a>
+                        <a href="{{ route('orders.history') }}" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"> History Pesanan</a>
                         @if(Auth::user()->role == 'admin')
-                            <a href="{{ route('admin.dashboard') }}" class="bg-purple-100 text-purple-700 px-3 py-1 rounded-lg text-xs font-bold border border-purple-200">Dashboard</a>
+                            <a href="{{ route('admin.dashboard') }}" class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg text-xs font-bold border border-slate-200">Dashboard</a>
                         @endif
                         <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf <button type="submit" class="text-rose-500 hover:bg-rose-50 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 01-3-3h4a3 3 0 013 3v1" /></svg></button>
@@ -82,40 +111,81 @@
                 </div>
             </div>
 
-            <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-lg border-b border-pink-100 py-4 px-4 flex flex-col gap-4 animate-fade-in-down z-40">
+            <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100 py-4 px-4 flex flex-col gap-4 animate-fade-in-down z-40">
+                <div class="flex flex-col items-end gap-3 px-2 border-b border-gray-100 pb-4 mb-2 text-right">
+                    <a href="#beranda" class="text-sm font-medium text-slate-600 hover:text-pink-500">Beranda</a>
+                    <a href="#tentang-kami" class="text-sm font-medium text-slate-600 hover:text-pink-500">Tentang Kami</a>
+                    <a href="#menu" class="text-sm font-medium text-slate-600 hover:text-pink-500">Menu Spesial</a>
+                    <a href="#preorder" class="text-sm font-medium text-slate-600 hover:text-pink-500">Preorder</a>
+                </div>
                 @auth
-                    <div class="px-2 pb-2 mb-2 border-b border-gray-100">
-                        <p class="text-xs text-gray-500">Halo,</p>
-                        <p class="font-bold text-gray-800">{{ Auth::user()->name }}</p>
+                    <div class="px-2 pb-2 mb-2 border-b border-gray-100 text-right">
+                        <p class="text-xs text-slate-500">Halo,</p>
+                        <p class="font-bold text-slate-800">{{ Auth::user()->name }}</p>
                     </div>
-                    <a href="{{ route('orders.history') }}" class="block px-2 text-gray-700"> Pesanan Saya</a>
+                    <a href="{{ route('orders.history') }}" class="block px-2 text-slate-700 text-right"> History Pesanan Saya</a>
                     @if(Auth::user()->role == 'admin')
-                        <a href="{{ route('admin.dashboard') }}" class="block px-2 text-purple-700 font-bold"> Dashboard Admin</a>
+                        <a href="{{ route('admin.dashboard') }}" class="block px-2 text-slate-700 font-bold text-right"> Dashboard Admin</a>
                     @endif
-                    <form action="{{ route('logout') }}" method="POST">@csrf<button type="submit" class="w-full text-left px-2 text-rose-500 font-bold">Keluar</button></form>
+                    <form action="{{ route('logout') }}" method="POST">@csrf<button type="submit" class="w-full text-right px-2 text-rose-500 font-bold">Keluar</button></form>
                 @else
-                    <a href="{{ route('login') }}" class="block text-center border border-pink-600 text-pink-600 px-4 py-2 rounded-full font-bold mx-2">Masuk</a>
-                    <a href="{{ route('register') }}" class="block text-center bg-pink-600 text-white px-4 py-2 rounded-full font-bold mx-2">Daftar</a>
+                    <a href="{{ route('login') }}" class="block text-center border border-slate-200 text-slate-700 px-4 py-2 rounded-full font-bold mx-2">Masuk</a>
+                    <a href="{{ route('register') }}" class="block text-center bg-pink-500 text-white px-4 py-2 rounded-full font-bold mx-2">Daftar</a>
                 @endauth
             </div>
         </div>
     </nav>
 
-    <div class="relative bg-gradient-to-br from-pink-500 to-rose-600 text-white py-16 md:py-24 overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-        <div class="container mx-auto px-4 md:px-8 relative z-10">
-            <div class="max-w-3xl text-left">
-                <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-pink-100 text-sm font-semibold mb-4 backdrop-blur-sm border border-white/30">✨ Cemal Cemol Solo</span>
-                <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight drop-shadow-md leading-tight">
-                    Risoles Mayo Spesial, <br/>
-                    <span class="text-yellow-300">Lumer di Mulut!</span>
-                </h1>
-                <p class="text-lg md:text-xl text-pink-50 font-light mb-10 leading-relaxed max-w-2xl">
-                    Nikmati sensasi jajanan viral Solo dengan kulit super crispy dan isian mayo yang melimpah. Kualitas premium, harga tetap bersahabat untuk semua kalangan.
-                </p>
+    <section id="beranda" class="relative bg-white pt-24 pb-32 md:pt-32 md:pb-40 overflow-hidden flex flex-col justify-center">
+        <div class="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#fdf2f8_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center flex flex-col items-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-[1.15] max-w-4xl mb-6">
+                Rasakan Sensasi Lumer di Setiap <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400">Gigitan.</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-600 max-w-2xl mb-10 leading-relaxed font-light">
+                Cemal Cemol menghadirkan risoles mayo kualitas premium tanpa pengawet. Kulit super crispy di luar dengan isian mayo melimpah yang memanjakan lidah Anda.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                <a href="#menu-section" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white bg-pink-500 rounded-full hover:bg-pink-600 transition-all shadow-lg shadow-pink-500/30 active:scale-95">
+                    Lihat Menu
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 -mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+                
+                <a href="https://wa.me/6285726559608" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-slate-700 bg-white border border-slate-200 rounded-full hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 transition-all active:scale-95">
+                    Pesan WhatsApp
+                </a>
+            </div>
+            
+            <div class="mt-16 md:mt-20 pt-8 md:pt-10 border-t border-slate-100 flex flex-wrap justify-center gap-10 md:gap-20">
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">10k+</span>
+                    <span class="text-sm font-medium text-slate-500 mt-1">Risol Terjual</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">4.9<span class="text-xl text-slate-400">/5</span></span>
+                    <span class="text-sm font-medium text-slate-500 mt-1">Rating Rasa</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">100%</span>
+                    <span class="text-sm font-medium text-slate-500 mt-1">Bahan Premium</span>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <a href="#menu" class="text-slate-400 hover:text-pink-500 transition-colors flex flex-col items-center gap-2">
+                    <span class="text-xs font-medium uppercase tracking-widest hidden md:block">Scroll</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                </a>
             </div>
         </div>
-    </div>
+    </section>
 
     <div class="container mx-auto px-4 mb-6 mt-6">
         <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-start gap-3 shadow-sm animate-fade-in-down">
@@ -138,9 +208,10 @@
         </div>
     </div>
 
-    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
-
-        <div class="flex flex-col md:flex-row items-start md:items-center gap-4 mb-8">
+    <main class="flex-grow">
+        
+        <section id="menu" class="container mx-auto px-4 py-20 md:py-32">
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-4 mb-8">
             <form action="{{ route('home') }}" method="GET" class="w-full md:w-auto md:flex-1 max-w-md relative shrink-0">
                 <input type="text" name="keyword" value="{{ request('keyword') }}" class="block w-full p-3.5 pl-12 text-sm text-gray-900 border border-gray-200 rounded-full focus:ring-2 focus:ring-pink-300 focus:outline-none bg-white shadow-sm" placeholder="Cari menu spesial (contoh: risol pedas)...">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
@@ -158,10 +229,12 @@
             </div>
         </div>
 
-        @if(isset($menus) && count($menus) > 0)
-            <div class="mb-10" id="menu-section">
-                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6 border-l-4 border-yellow-500 pl-3">Menu Kami</h2>
-                <div class="flex flex-col md:grid md:grid-cols-3 gap-4">
+        <div class="mb-12">
+            <span class="text-pink-500 font-bold tracking-wider uppercase text-sm mb-2 block">Menu Spesial</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Pilihan Menu Kami</h2>
+            <div id="menu-section">
+                @if(isset($menus) && count($menus) > 0)
+                    <div class="flex flex-col md:grid md:grid-cols-3 gap-4">
                     @foreach($menus as $menu)
                         <div class="bg-white rounded-xl shadow-sm border border-yellow-100 overflow-hidden flex flex-row md:flex-col hover:shadow-lg transition duration-200">
                             <div class="relative w-28 h-28 md:w-full md:h-48 flex-shrink-0 order-last md:order-first bg-gray-100 group">
@@ -188,13 +261,22 @@
                             </div>
                         </div>
                     @endforeach
-                </div>
+                    </div>
+                @else
+                    <div class="col-span-full py-10 text-center text-gray-500 bg-white rounded-xl border border-dashed border-gray-300">
+                        <p>Menu tidak ditemukan.</p>
+                    </div>
+                @endif
             </div>
-        @endif
-
-        <div class="mb-4">
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 border-l-4 border-pink-500 pl-3">Produk Preorder</h2>
         </div>
+
+        </section>
+
+        <section id="preorder" class="container mx-auto px-4 py-20 md:py-32 border-t border-gray-100">
+            <div class="mb-12">
+                <span class="text-pink-500 font-bold tracking-wider uppercase text-sm mb-2 block">Special Order</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Produk Preorder</h2>
+            </div>
 
         <div class="flex flex-col md:grid md:grid-cols-4 gap-4">
             @forelse($products as $product)
@@ -270,10 +352,15 @@
             @endforelse
         </div>
 
+        </section>
     </main>
 
-    <div class="bg-white border-b border-pink-100">
-        <div class="container mx-auto px-4 py-8">
+    <section id="tentang-kami" class="bg-white pt-20 md:pt-32 pb-32 md:pb-40">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-pink-500 font-bold tracking-wider uppercase text-sm mb-2 block">Kenapa Kami?</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Kualitas Bintang Lima</h2>
+            </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div class="p-4 group hover:-translate-y-1 transition duration-300">
                     <div class="bg-pink-100 w-12 h-12 mx-auto rounded-full flex items-center justify-center text-pink-600 mb-3 group-hover:bg-pink-600 group-hover:text-white transition"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.687" /></svg></div>
@@ -297,58 +384,75 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <footer class="bg-gray-900 text-gray-300 pt-12 pb-6 border-t border-pink-900/30">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                        <span class="bg-pink-600 text-white p-1 rounded shadow-lg shadow-pink-600/50">️</span> Cemal Cemol
-                    </h3>
-                    <p class="text-sm leading-relaxed text-gray-400 mb-4 max-w-xs">
-                      Produsen Risoles Mayo Lumer & Snack Box Terenak di Solo. Menerima pesanan untuk acara, arisan, dan oleh-oleh. Lokasi CFD: Depan Hotel Diamond.
+    <footer class="bg-pink-50 pt-24 pb-10 rounded-t-[3rem] md:rounded-t-[4rem] -mt-16 relative z-10 shadow-[0_-15px_40px_-15px_rgba(236,72,153,0.15)]">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
+                <!-- Brand Info -->
+                <div class="md:col-span-2">
+                    <a href="#beranda" class="text-2xl font-extrabold tracking-tight text-slate-900 mb-6 block">
+                        Cemal<span class="text-pink-500">Cemol.</span>
+                    </a>
+                    <p class="text-slate-500 text-sm leading-relaxed max-w-sm mb-6">
+                        Menghadirkan risoles mayo kualitas premium tanpa pengawet. Teman terbaik untuk setiap momen spesial Anda.
                     </p>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-bold text-white mb-4 border-b border-pink-600 inline-block pb-1">Metode Pembayaran</h4>
-                    <div class="flex gap-2">
-                        <div class="bg-white p-1 rounded w-12 h-8 flex items-center justify-center">
-                            <span class="text-xs font-bold text-blue-800">QRIS</span>
-                        </div>
-                        <div class="bg-white p-1 rounded w-12 h-8 flex items-center justify-center">
-                            <span class="text-xs font-bold text-green-700">Cash</span>
-                        </div>
+                    <!-- Social Links Mini -->
+                    <div class="flex space-x-4">
+                        <a href="https://instagram.com/aqieladhir" target="_blank" class="text-slate-400 hover:text-pink-500 transition">
+                            <span class="sr-only">Instagram</span>
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        <a href="https://wa.me/6285726559608" target="_blank" class="text-slate-400 hover:text-green-500 transition">
+                            <span class="sr-only">WhatsApp</span>
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.027 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        </a>
                     </div>
                 </div>
 
+                <!-- Pembayaran -->
                 <div>
-                    <h4 class="text-lg font-bold text-white mb-4 border-b border-pink-600 inline-block pb-1">Hubungi Kami</h4>
-                    <ul class="space-y-3 text-sm">
-                        <li>
-                            <a href="https://wa.me/6285726559608" target="_blank" class="flex items-center gap-2 hover:text-green-400 transition group">
-                                <span class="bg-gray-800 p-1.5 rounded group-hover:bg-green-600 transition text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
-                                    </svg>
-                                </span> +62 857-2655-9608
-                            </a>
+                    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-6">Pembayaran</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <div class="bg-white p-2 rounded flex items-center justify-center border border-pink-200 shadow-sm">
+                                <span class="text-[10px] font-extrabold text-blue-800 tracking-tight">QRIS</span>
+                            </div>
+                            Transfer Praktis
                         </li>
-                        <li>
-                            <a href="https://instagram.com/aqieladhir" class="flex items-center gap-2 hover:text-pink-400 transition group">
-                                <span class="bg-gray-800 p-1.5 rounded group-hover:bg-gradient-to-tr from-yellow-500 to-purple-600 transition text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.036 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
-                                    </svg>
-                                </span> Instagram: @aqieladhir
-                            </a>
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <div class="bg-white p-2 rounded flex items-center justify-center border border-pink-200 shadow-sm">
+                                <span class="text-[10px] font-extrabold text-green-700 tracking-tight">CASH</span>
+                            </div>
+                            Tunai (COD/CFD)
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Kontak -->
+                <div>
+                    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-6">Hubungi Kami</h4>
+                    <ul class="space-y-4 text-sm text-slate-600">
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-pink-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span>CFD Solo (Depan Hotel Diamond)<br>Setiap Hari Minggu</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-pink-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            <a href="https://wa.me/6285726559608" class="hover:text-pink-500 transition">+62 857-2655-9608</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-6 text-center text-sm text-gray-500">
-                <p>&copy; 2025 CemalCemol Solo. Risoles Mayo Terenak & Termurah.</p>
+
+            <div class="border-t border-pink-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-slate-500">
+                    &copy; {{ date('Y') }} CemalCemol Solo. All rights reserved.
+                </p>
+                <div class="flex space-x-6 text-sm text-slate-500 font-medium">
+                    <a href="#" class="hover:text-pink-500 transition">Kebijakan Privasi</a>
+                    <a href="#" class="hover:text-pink-500 transition">Syarat & Ketentuan</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -448,14 +552,14 @@
                             if (newMenuSection && currentMenuSection) {
                                 currentMenuSection.innerHTML = newMenuSection.innerHTML;
                             } else if (currentMenuSection) {
-                                currentMenuSection.innerHTML = '<p class="text-center text-gray-500 py-8">Menu tidak ditemukan.</p>';
+                                currentMenuSection.innerHTML = '<div class="col-span-full py-10 text-center text-gray-500 bg-white rounded-xl border border-dashed border-gray-300"><p>Menu tidak ditemukan.</p></div>';
                             }
                         })
                         .catch(err => {
                             console.error('Error fetching data:', err);
                             const currentMenuSection = document.getElementById('menu-section');
                             if (currentMenuSection) {
-                                currentMenuSection.innerHTML = '<p class="text-center text-red-500 py-8">Terjadi kesalahan, silakan coba lagi.</p>';
+                                currentMenuSection.innerHTML = '<div class="col-span-full py-10 text-center text-red-500 bg-white rounded-xl border border-dashed border-gray-300"><p>Terjadi kesalahan, silakan coba lagi.</p></div>';
                             }
                         });
                 });

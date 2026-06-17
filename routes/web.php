@@ -63,7 +63,7 @@ Route::middleware(['auth', 'cekrole:admin'])->group(function () {
     Route::get('/admin/dashboard', [ProductController::class, 'adminIndex'])->name('admin.dashboard');
 
     // B. Manajemen Produk (CRUD Lengkap)
-    Route::resource('products', ProductController::class);
+    Route::resource('preorders', ProductController::class)->parameters(['preorders' => 'product']);
 
     // C. Manajemen Order (Admin Cek Pesanan Masuk)
     // Ingat: View-nya ada di folder resources/views/products/orders.blade.php

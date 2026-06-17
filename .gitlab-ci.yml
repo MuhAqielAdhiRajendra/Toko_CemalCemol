@@ -21,7 +21,7 @@ deploy_production:
     - npm install
     - npm run build
     
-    - echo "2. Transfer kodingan ke Azure VM via Rsync..."
+    - echo "2. Transfer code ke Azure VM via Rsync..."
     - rsync -avz --exclude='.git' --exclude='node_modules' --exclude='/storage' --exclude='.env' ./ $SERVER_USER@$SERVER_HOST:/home/muhaqieladhirajendra/htdocs/muhaqieladhirajendra.dev/
     
     - echo "3. Menjalankan Command Laravel di dalam Azure VM via SSH..."
