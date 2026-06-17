@@ -21,12 +21,14 @@ deploy_production:
     - npm install
     - npm run build
     
-    - echo "2. Transfer kodingan (termasuk hasil build) ke Azure VM via Rsync..."
-    - rsync -avz --exclude='.git' --exclude='node_modules' --exclude='/storage' --exclude='.env' ./ $SERVER_USER@$SERVER_HOST:/var/www/muhaqieladhirajendra.dev/
+    - echo "2. Transfer kodingan ke Azure VM via Rsync..."
+    # PATH UDAH DIGANTI KE /home/...
+    - rsync -avz --exclude='.git' --exclude='node_modules' --exclude='/storage' --exclude='.env' ./ $SERVER_USER@$SERVER_HOST:/home/muhaqieladhirajendra/htdocs/muhaqieladhirajendra.dev/
     
     - echo "3. Menjalankan Command Laravel di dalam Azure VM via SSH..."
+    # PATH UDAH DIGANTI KE /home/...
     - ssh $SERVER_USER@$SERVER_HOST "
-        cd /var/www/muhaqieladhirajendra.dev &&
+        cd /home/muhaqieladhirajendra/htdocs/muhaqieladhirajendra.dev &&
         
         echo 'Menginstal dependensi PHP...' &&
         composer install --optimize-autoloader --no-dev &&
@@ -45,9 +47,8 @@ deploy_production:
         php artisan optimize &&
         
         echo 'Mengatur permission folder...' &&
-        (chown -R www-data:www-data /var/www/muhaqieladhirajendra.dev || sudo chown -R www-data:www-data /var/www/muhaqieladhirajendra.dev || true) &&
-        (chmod -R 777 storage bootstrap/cache || sudo chmod -R 777 storage bootstrap/cache)
+        chmod -R 777 storage bootstrap/cache || sudo chmod -R 777 storage bootstrap/cache
       "
-    - echo "Deploy Sukses tanpa drama Artifacts!"
+    - echo "Deploy Sukses ke Path yang Benar!"
   only:
     - main
