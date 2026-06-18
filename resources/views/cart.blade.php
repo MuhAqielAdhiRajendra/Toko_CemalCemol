@@ -134,27 +134,32 @@
         <div class="mb-4">
             <label class="block text-gray-600 text-sm font-bold mb-2 ml-1">Nama Penerima</label>
             <input type="text" name="name" required 
-                class="w-full bg-pink-50 border border-pink-100 text-gray-800 text-sm rounded-xl focus:ring-pink-500 focus:border-pink-500 block p-3 transition disabled:cursor-not-allowed" 
-                value="{{ Auth::user()->name ?? '' }}" placeholder="Nama kamu...">
+                class="w-full bg-pink-50 border border-pink-100 text-gray-800 text-sm rounded-xl focus:ring-pink-500 focus:border-pink-500 block p-3 transition disabled:cursor-not-allowed @error('name') border-red-500 ring-red-500 @enderror" 
+                value="{{ old('name', Auth::user()->name ?? '') }}" placeholder="Nama kamu...">
+            @error('name')
+                <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <div class="mb-4">
             <label class="block text-gray-600 text-sm font-bold mb-2 ml-1">WhatsApp</label>
-            <div class="flex">
-                <span class="inline-flex items-center px-3 text-sm text-gray-500 bg-pink-100 border border-r-0 border-pink-100 rounded-l-xl font-bold">
-                    +62
-                </span>
-                <input type="number" name="phone" required 
-                    class="rounded-none rounded-r-xl bg-pink-50 border border-pink-100 text-gray-800 focus:ring-pink-500 focus:border-pink-500 block flex-1 min-w-0 w-full text-sm p-3 disabled:cursor-not-allowed" 
-                    placeholder="812xxxxx">
-            </div>
+            <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="phone" required 
+                class="w-full bg-pink-50 border border-pink-100 text-gray-800 text-sm rounded-xl focus:ring-pink-500 focus:border-pink-500 block p-3 transition disabled:cursor-not-allowed @error('phone') border-red-500 ring-red-500 @enderror" 
+                value="{{ old('phone') }}"
+                placeholder="0812xxxxxxxx" pattern="^08[0-9]{8,11}$" title="Nomor HP harus berawalan 08 dan berisi 10-13 angka">
+            @error('phone')
+                <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <div class="mb-4">
             <label class="block text-gray-600 text-sm font-bold mb-2 ml-1">Alamat Lengkap</label>
             <textarea name="address" required rows="3" 
-                class="block p-3 w-full text-sm text-gray-800 bg-pink-50 rounded-xl border border-pink-100 focus:ring-pink-500 focus:border-pink-500 disabled:cursor-not-allowed" 
-                placeholder="Jalan, RT/RW, Patokan rumah..."></textarea>
+                class="block p-3 w-full text-sm text-gray-800 bg-pink-50 rounded-xl border border-pink-100 focus:ring-pink-500 focus:border-pink-500 disabled:cursor-not-allowed @error('address') border-red-500 ring-red-500 @enderror" 
+                placeholder="Jalan, RT/RW, Patokan rumah...">{{ old('address') }}</textarea>
+            @error('address')
+                <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <div class="mb-6">

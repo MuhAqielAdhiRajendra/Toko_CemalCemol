@@ -90,11 +90,13 @@ class OrderController extends Controller
         // 2. VALIDASI UPDATE (Tambah Phone, Payment, Proof)
         $request->validate([
             'name' => 'required|string',
-            'phone' => 'required|numeric', // Validasi No HP
+            'phone' => ['required', 'string', 'regex:/^08[0-9]{8,11}$/'], // Validasi No HP berawalan 08
             'address' => 'required|string',
             'payment_method' => 'required|in:cod,qris', // Cuma boleh COD atau QRIS
             // Bukti transfer wajib DIUPLOAD kalau pilih QRIS
             'payment_proof' => 'required_if:payment_method,qris|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'phone.regex' => 'Nomor WhatsApp harus berawalan 08 dan valid.',
         ]);
 
         // 3. CEK STOK (Logic Anti Overselling)
